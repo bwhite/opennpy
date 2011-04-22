@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import opennpy
 
 a = opennpy.sync_get_depth()
