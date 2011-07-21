@@ -8,13 +8,13 @@ import frame_convert
 def display(joints, depth):
     x, y = (joints['scene'] == 0).nonzero()
     if depth:
-        vid = joints['image'].copy()
-        vid[x, y, :] = 0
-        vid = frame_convert.video_cv(vid)
-    else:
         vid = joints['depth'].copy()
         vid[x, y] = 0
         vid = frame_convert.pretty_depth_cv(vid)
+    else:
+        vid = joints['image'].copy()
+        vid[x, y, :] = 0
+        vid = frame_convert.video_cv(vid)
     for x in joints['joints'][0].values():
         if x['world'][2] == 0. or x['conf'] < .5:
             continue
