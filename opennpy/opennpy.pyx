@@ -34,12 +34,28 @@ cdef extern from "opennpy_aux.h":
     void opennpy_shutdown()
     void opennpy_align_depth_to_rgb()
 
+cdef extern from "tracker.h":
+    int get_joints(np.float64_t *out_joints, np.float64_t *out_proj_joints)
+
+
 import_array()
 timestamp = 0
 cdef np.npy_intp ddims[2]
 cdef np.npy_intp vdims[3]
 ddims[0], ddims[1]  = 480, 640
 vdims[0], vdims[1], vdims[2]  = 480, 640, 3
+JOINT_LABELS = ['head', 'neck', 'torso', 'waist',
+                'left_collar', 'left_shoulder', 'left_elbow', 'left_wrist', 'left_hand', 'left_fingertip',
+                'right_collar', 'right_shoulder', 'right_elbow', 'right_wrist', 'right_hand', 'right_fingertip',
+                'left_hip', 'left_knee', 'left_ankle', 'left_foot',
+                'right_hip', 'right_knee', 'right_ankle', 'right_foot']
+
+def sync_get_joints():
+    cdef np.ndarray joints = np.zeros((24, 3))
+    cdef np.ndarray proj_joints = np.zeros((24, 2))
+    if not get_joints(<np.float64_t *>joints.data, <np.float64_t *>proj_joints.data):
+        return {0: {'world_joints': dict(zip(JOINT_LABELS, joints)),
+                    'image_joints': dict(zip(JOINT_LABELS, proj_joints))}}
 
 def sync_get_video():
     global timestamp

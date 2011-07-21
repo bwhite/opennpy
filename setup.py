@@ -35,7 +35,8 @@ except ImportError:
 
 ext_modules = [Extension("opennpy",
                          ["opennpy/opennpy" + source_ext,
-                          'opennpy/opennpy_aux.cpp'],
+                          'opennpy/opennpy_aux.cpp',
+                          'opennpy/tracker.cpp'],
                          extra_compile_args=['-I', np.get_include(),
                                              '-I', '/usr/include/ni'],
                          extra_link_args=['-l', 'OpenNI'])]
