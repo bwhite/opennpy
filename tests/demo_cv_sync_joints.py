@@ -20,7 +20,7 @@ def get_video():
 import pprint
 st = time.time()
 while 1:
-    if time.time() - st < .2:
+    if time.time() - st < 0:
         continue
     st = time.time()
     joints = opennpy.sync_get_joints()

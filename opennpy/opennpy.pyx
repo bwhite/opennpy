@@ -61,10 +61,9 @@ def sync_get_joints():
                       &depthp, &imagep, &scenep):
         player_joints = dict([(l, {'world': x, 'image': y, 'conf': z})
                          for l, (x, y, z) in zip(JOINT_LABELS, zip(joints, proj_joints, conf))])
-        image = PyArray_SimpleNewFromData(3, vdims, np.NPY_UINT8, imagep).copy()
-        depth = PyArray_SimpleNewFromData(2, ddims, np.NPY_UINT16, depthp).copy()
-        scene = PyArray_SimpleNewFromData(2, ddims, np.NPY_UINT16, scenep).copy()
-        print(player_joints)
+        image = PyArray_SimpleNewFromData(3, vdims, np.NPY_UINT8, imagep)#.copy()
+        depth = PyArray_SimpleNewFromData(2, ddims, np.NPY_UINT16, depthp)#.copy()
+        scene = PyArray_SimpleNewFromData(2, ddims, np.NPY_UINT16, scenep)#.copy()
         return {'joints': {0: player_joints},
                 'depth': depth, 'image': image, 'scene': scene}
 

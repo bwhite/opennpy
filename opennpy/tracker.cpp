@@ -38,7 +38,7 @@ int GetSkel(XnUserID user, XnSkeletonJointPosition joints[24], XnPoint3D proj_jo
         return 1;
     }
     for (int i = 0; i < 24; ++i) {
-        userGenerator.GetSkeletonCap().GetSkeletonJointPosition(user, (XnSkeletonJoint)i, joints[i]);
+        userGenerator.GetSkeletonCap().GetSkeletonJointPosition(user, (XnSkeletonJoint)(i + 1), joints[i]);
         proj_joints[i] = joints[i].position;
     }
     depthGenerator.ConvertRealWorldToProjective(24, proj_joints, proj_joints);
