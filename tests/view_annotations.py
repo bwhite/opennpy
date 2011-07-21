@@ -25,10 +25,11 @@ def display(joints, depth):
 
 
 def main(in_dir, depth):
+    print(in_dir)
     for x in glob.glob(in_dir + '/*.pkl'):
         with open(x) as fp:
             joints = pickle.load(fp)
-        main(joints, depth)
+        display(joints, depth)
         if cv.WaitKey(10) == 27:
             break
         time.sleep(.1)
