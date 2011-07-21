@@ -35,8 +35,8 @@ cdef extern from "opennpy_aux.h":
     void opennpy_align_depth_to_rgb()
 
 cdef extern from "tracker.h":
-    int get_joints(np.float64_t *out_joints, np.float64_t *out_proj_joints)
-
+    int get_joints(np.float64_t *out_joints, np.float64_t *out_proj_joints, np.float64_t *out_conf, void **depth_data,
+                   void **image_data, void **scene_data)
 
 import_array()
 timestamp = 0
@@ -53,9 +53,20 @@ JOINT_LABELS = ['head', 'neck', 'torso', 'waist',
 def sync_get_joints():
     cdef np.ndarray joints = np.zeros((24, 3))
     cdef np.ndarray proj_joints = np.zeros((24, 2))
-    if not get_joints(<np.float64_t *>joints.data, <np.float64_t *>proj_joints.data):
-        return {0: {'world_joints': dict(zip(JOINT_LABELS, joints)),
-                    'image_joints': dict(zip(JOINT_LABELS, proj_joints))}}
+    cdef np.ndarray conf = np.zeros(24)
+    cdef void *depthp
+    cdef void *imagep
+    cdef void *scenep
+    if not get_joints(<np.float64_t *>joints.data, <np.float64_t *>proj_joints.data, <np.float64_t *>conf.data,
+                      &depthp, &imagep, &scenep):
+        player_joints = dict([(l, {'world': x, 'image': y, 'conf': z})
+                         for l, (x, y, z) in zip(JOINT_LABELS, zip(joints, proj_joints, conf))])
+        image = PyArray_SimpleNewFromData(3, vdims, np.NPY_UINT8, imagep).copy()
+        depth = PyArray_SimpleNewFromData(2, ddims, np.NPY_UINT16, depthp).copy()
+        scene = PyArray_SimpleNewFromData(2, ddims, np.NPY_UINT16, scenep).copy()
+        print(player_joints)
+        return {'joints': {0: player_joints},
+                'depth': depth, 'image': image, 'scene': scene}
 
 def sync_get_video():
     global timestamp

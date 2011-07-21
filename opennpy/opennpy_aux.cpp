@@ -19,6 +19,7 @@ UserGenerator userGenerator;
 
 DepthMetaData depthData; 
 ImageMetaData imageData;
+SceneMetaData sceneData;
 int initialized = 0;
 
 int opennpy_init(void)

@@ -15,9 +15,12 @@
 using namespace xn;
 
 extern Context context;
-ScriptNode scriptNode;
 extern DepthGenerator depthGenerator;
+extern ImageGenerator imageGenerator;
 extern UserGenerator userGenerator;
+extern DepthMetaData depthData; 
+extern ImageMetaData imageData;
+extern SceneMetaData sceneData;
 
 XnUserID num_players = 0;
 XnBool is_calibrated = FALSE;
@@ -167,17 +170,11 @@ void XN_CALLBACK_TYPE CalibrationCompleted(SkeletonCapability& skeleton, XnUserI
 	}
 
 int read_data(XnSkeletonJointPosition joints[24], XnPoint3D proj_joints[24]) {
-    SceneMetaData sceneMD;
-    DepthMetaData depthMD;
-    depthGenerator.GetMetaData(depthMD);
-
-    // Read next available data
-    context.WaitOneUpdateAll(depthGenerator);
-
-    // Process the data
-    //DRAW
-    depthGenerator.GetMetaData(depthMD);
-    userGenerator.GetUserPixels(0, sceneMD);
+    // Update internal buffers
+    context.WaitAndUpdateAll();
+    depthGenerator.GetMetaData(depthData);
+    imageGenerator.GetMetaData(imageData);
+    userGenerator.GetUserPixels(0, sceneData);
     if (num_players != 0)
     {
         XnPoint3D com;
@@ -222,7 +219,8 @@ int init_tracker()
     tracker_inited = 1;
 }
 
-int get_joints(double *out_joints, double *out_proj_joints)
+int get_joints(double *out_joints, double *out_proj_joints, double *out_conf, uint16_t **depth_data,
+               uint8_t **image_data, uint16_t **scene_data)
 {
     XnSkeletonJointPosition joints[24];
     XnPoint3D proj_joints[24];
@@ -232,12 +230,16 @@ int get_joints(double *out_joints, double *out_proj_joints)
     //if (!out_val)
     //    PrintSkel(joints);
     if (!out_val)
-        for (int i = 0; i < 24; ++i, out_joints += 3, out_proj_joints += 2) {
+        for (int i = 0; i < 24; ++i, out_joints += 3, out_proj_joints += 2, ++out_conf) {
             out_joints[0] = joints[i].position.X;
             out_joints[1] = joints[i].position.Y;
             out_joints[2] = joints[i].position.Z;
             out_proj_joints[0] = proj_joints[i].X;
             out_proj_joints[1] = proj_joints[i].Y;
+            *out_conf = joints[i].fConfidence;
         }
+    *depth_data = (uint16_t*) depthData.Data();
+    *image_data = (uint8_t*) imageData.Data();
+    *scene_data = (uint16_t*) sceneData.Data();
     return out_val;
 }
