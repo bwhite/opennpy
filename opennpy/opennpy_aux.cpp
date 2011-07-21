@@ -76,3 +76,15 @@ void opennpy_align_depth_to_rgb(void) {
     context.WaitOneUpdateAll(depthGenerator); 
     imageGenerator.WaitAndUpdateData(); 
 }
+
+void opennpy_depth_to_3d(uint16_t *depth, double *world) {
+    int z;
+    const double tan_675_2 = 1.6008498856613513; //tan(0.675) * 2.0;
+    for (int y = 0; y < 480; ++y)
+        for (int x = 0; x < 640; ++x, world += 3) {
+            z = depth[y * 640 + x];
+            world[0] = ((x / 640.) - .5) * tan_675_2 * z;
+            world[1] = (.5 - (y / 480.)) * tan_675_2 * z;
+            world[2] = z;
+        }
+}

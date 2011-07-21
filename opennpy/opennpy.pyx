@@ -33,6 +33,7 @@ cdef extern from "opennpy_aux.h":
     void *opennpy_sync_get_depth()
     void opennpy_shutdown()
     void opennpy_align_depth_to_rgb()
+    void opennpy_depth_to_3d(np.uint16_t *depth, np.float64_t *world)
 
 cdef extern from "tracker.h":
     int get_joints(np.float64_t *out_joints, np.float64_t *out_proj_joints, np.float64_t *out_conf, void **depth_data,
@@ -88,3 +89,8 @@ def sync_stop():
 
 def align_depth_to_rgb():
     opennpy_align_depth_to_rgb()
+
+def depth_to_3d(np.ndarray[np.uint16_t, ndim=2, mode='c'] depth):
+    cdef np.ndarray world = np.zeros((480, 640, 3))
+    opennpy_depth_to_3d(<np.uint16_t *>depth.data, <np.float64_t *>world.data)
+    return world
