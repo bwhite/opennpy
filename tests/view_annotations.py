@@ -14,6 +14,7 @@ def display(joints, depth):
     else:
         vid = joints['depth'].copy()
         vid[x, y] = 0
+        vid = frame_convert.pretty_depth_cv(vid)
     for x in joints['joints'][0].values():
         if x['world'][2] == 0. or x['conf'] < .5:
             continue
