@@ -10,7 +10,8 @@ extern "C" {
     uint16_t *opennpy_sync_get_depth(void);
     void opennpy_shutdown(void);
     void opennpy_align_depth_to_rgb(void);
-    void opennpy_depth_to_3d(uint16_t *depth, double *world);
+    void opennpy_depth_to_3d(uint16_t *depth, double *world, double hfov, double vfov);
+    void opennpy_get_fov(double *hfov, double *vfov);
 #ifdef __cplusplus
 }
 #endif

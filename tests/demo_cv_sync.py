@@ -19,5 +19,6 @@ def get_video():
 while 1:
     cv.ShowImage('Depth', get_depth())
     cv.ShowImage('Video', get_video())
+    print(opennpy.get_fov())
     if cv.WaitKey(10) == 27:
         break
