@@ -34,6 +34,7 @@ cdef extern from "opennpy_aux.h":
     void opennpy_shutdown()
     void opennpy_align_depth_to_rgb()
     void opennpy_get_fov(double *hfov, double *vfov)
+    void opennpy_depth_to_3d(np.uint16_t *depth, double *world, double hfov, double vfov)
 
 cdef extern from "tracker.h":
     int get_joints(np.float64_t *out_joints, np.float64_t *out_proj_joints, np.float64_t *out_conf, void **depth_data,
