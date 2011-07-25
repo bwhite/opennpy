@@ -59,15 +59,17 @@ def sync_get_joints():
     cdef void *depthp
     cdef void *imagep
     cdef void *scenep
-    image = PyArray_SimpleNewFromData(3, vdims, np.NPY_UINT8, imagep).copy()
-    depth = PyArray_SimpleNewFromData(2, ddims, np.NPY_UINT16, depthp).copy()
-    scene = PyArray_SimpleNewFromData(2, ddims, np.NPY_UINT16, scenep).copy()
-    out = {'depth': depth, 'image': image, 'scene': scene}
+    player_joints = {}
     if not get_joints(<np.float64_t *>joints.data, <np.float64_t *>proj_joints.data, <np.float64_t *>conf.data,
                       &depthp, &imagep, &scenep):
         player_joints = dict([(l, {'world': x, 'image': y, 'conf': z})
                               for l, (x, y, z) in zip(JOINT_LABELS, zip(joints, proj_joints, conf))])
-        out['joints'] = {0: player_joints}
+        player_joints = {0: player_joints}
+    image = PyArray_SimpleNewFromData(3, vdims, np.NPY_UINT8, imagep).copy()
+    depth = PyArray_SimpleNewFromData(2, ddims, np.NPY_UINT16, depthp).copy()
+    scene = PyArray_SimpleNewFromData(2, ddims, np.NPY_UINT16, scenep).copy()
+    out = {'depth': depth, 'image': image, 'scene': scene, 'joints': player_joints}
+
     return out
 
 def sync_get_video():
