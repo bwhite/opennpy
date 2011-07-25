@@ -67,7 +67,7 @@ def sync_get_joints():
                       &depthp, &imagep, &scenep):
         player_joints = dict([(l, {'world': x, 'image': y, 'conf': z})
                               for l, (x, y, z) in zip(JOINT_LABELS, zip(joints, proj_joints, conf))])
-    out['joints'] = {0: player_joints}
+        out['joints'] = {0: player_joints}
     return out
 
 def sync_get_video():
