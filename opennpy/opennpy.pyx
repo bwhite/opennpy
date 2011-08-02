@@ -90,11 +90,6 @@ def sync_stop():
 def align_depth_to_rgb():
     opennpy_align_depth_to_rgb()
 
-def depth_to_3d(np.ndarray[np.uint16_t, ndim=2, mode='c'] depth, hfov=1.0144686707507438, vfov=0.78980943449644714):
-    cdef np.ndarray world = np.zeros((480, 640, 3))
-    opennpy_depth_to_3d(<np.uint16_t *>depth.data, <np.float64_t *>world.data, hfov, vfov)
-    return world
-
 def get_fov():
     cdef double hfov, vfov
     opennpy_get_fov(&hfov, &vfov)
