@@ -87,3 +87,17 @@ void opennpy_get_fov(double *hfov, double *vfov) {
     *hfov = fov.fHFOV;
     *vfov = fov.fVFOV;
 }
+
+void opennpy_depth_to_3d(uint16_t *depth, double *world, double hfov, double vfov) {
+    double z;
+    int x, y;
+    const double x2z = tan(hfov / 2) * 2;
+    const double y2z = tan(vfov / 2) * 2;
+    for (y = 0; y < 480; ++y)
+        for (x = 0; x < 640; ++x, world += 3) {
+            z = depth[y * 640 + x];
+            world[0] = ((x / 640.) - .5) * x2z * z;
+            world[1] = (.5 - (y / 480.)) * y2z * z;
+            world[2] = z;
+        }
+}
