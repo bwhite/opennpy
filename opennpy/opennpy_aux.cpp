@@ -73,8 +73,8 @@ void opennpy_shutdown(void) {
 void opennpy_align_depth_to_rgb(void) {
     if (!initialized)
         opennpy_init();
-    //depthGenerator.GetAlternativeViewPointCap().SetViewPoint(imageGenerator);
-    imageGenerator.GetAlternativeViewPointCap().SetViewPoint(depthGenerator);
+    depthGenerator.GetAlternativeViewPointCap().SetViewPoint(imageGenerator);
+    //imageGenerator.GetAlternativeViewPointCap().SetViewPoint(depthGenerator);
     context.WaitOneUpdateAll(imageGenerator); 
     depthGenerator.WaitAndUpdateData(); 
 }
